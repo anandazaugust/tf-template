@@ -1,9 +1,9 @@
 
  parameters:
-  name: steps
-  displayName: 'Steps to add'
-  type: stepList
-  default: []
+  - name: steps
+    displayName: 'Steps to add'
+    type: stepList
+    default: []
  
  jobs:
   - job: Deploy
