@@ -1,0 +1,16 @@
+
+ jobs:
+  - job: Deploy
+    displayName: 'terraform plan'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+          -${{each step in parameters.steps}}:
+            -  ${{each pair in step}}: 
+                   ${{pair.key}}:${{pair.value}}
+
+  - template: keyvault.yaml
+    parameters:
+      keyvaultName: ${{parameters.keyvaultName}}
+      keyvaultsubscription: ${{parameters.keyvaultsubscription}}  
+      keyvault_service_connection: ${{parameters.keyvault_service_connection}}
