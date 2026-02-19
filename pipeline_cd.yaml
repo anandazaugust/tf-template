@@ -23,7 +23,7 @@
             displayName: "Debug ARM"
             env:
                 ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-                ARM_TENANT_ID: $(ARM_TENANT_ID)
+                ARM_TENANT_ID: $(ARM-TENANT-ID)
             # we are adding above step to view the env variable we got in keyvault task
 
           - task: terraformInstaller@0
