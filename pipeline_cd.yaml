@@ -5,12 +5,23 @@
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-          -${{each step in parameters.steps}}:
+          - ${{each step in parameters.steps}}: #useful to add steps in the future without changing the template
             -  ${{each pair in step}}: 
                    ${{pair.key}}:${{pair.value}}
+          - task: azurekeyvault@2
+            displayName: 'Azure Key Vault: Fetch secrets'
+            inputs:
+              connectedServiceName: 'DC-Project-SC'
+              keyVaultName: 'DC-KV'
+          - script: |
+              make init
+              make plan
+            env:
+              ARM_CLIENT_ID: $(arm-client-id)
+              ARM_CLIENT_SECRET: $(arm-client-secret)
+              ARM_SUBSCRIPTION_ID: $(arm-subscription-id)
+              ARM_TENANT_ID: $(arm-tenant-id)
+            displayName: 'Set ARM environment variables'
+             
 
-  - template: keyvault.yaml
-    parameters:
-      keyvaultName: ${{parameters.keyvaultName}}
-      keyvaultsubscription: ${{parameters.keyvaultsubscription}}  
-      keyvault_service_connection: ${{parameters.keyvault_service_connection}}
+           
