@@ -1,4 +1,7 @@
 
+ parameters:
+  steps: []
+ 
  jobs:
   - job: Deploy
     displayName: 'terraform plan'
