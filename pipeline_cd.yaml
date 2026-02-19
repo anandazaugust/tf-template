@@ -91,9 +91,9 @@
     displayName: 'terraform approve'
     # condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     dependsOn: TF_Plan_main
-    pool:
-            - task: ManualValidation@0
-              displayName: 'Manual approval for terraform apply'
+
+    task: ManualValidation@0
+              
   
   - job: TF_Apply
     displayName: 'terraform apply'
