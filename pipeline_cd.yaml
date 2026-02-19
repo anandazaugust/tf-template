@@ -18,7 +18,12 @@
             displayName: 'Azure Key Vault: Fetch secrets'
             inputs:
               connectedServiceName: 'acrpushv1' #this svc name should be there in azdo or it ll throw error
-              keyVaultName: 'dolcegabbana'
+              keyVaultName: 'dolcegabbana' # the svc above should have the permission to view the secret
+
+          - task: terraformInstaller@0
+            displayName: 'Install Terraform'
+            inputs:
+              terraformVersion: 'latest' # we are installing as the public azdo doesnt have it
           - script: |
               make init
               make plan
