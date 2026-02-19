@@ -36,7 +36,7 @@
               make plan
           
             env:
-                ARM_CLIENT_ID: $(myclientid)
+                ARM_CLIENT_AD: $(myclientid)
                 ARM_TENANT_ID: $(mytenantid)
                 ARM_CLIENT_SECRET: $(myclientsecret)
 
