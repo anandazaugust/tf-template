@@ -1,6 +1,6 @@
 
  parameters: # if parameter not defined we ll see issue
-  - name: steps # got an issue when no hyphen in the name
+  - name: buildsteps # got an issue when no hyphen in the name
     displayName: 'Steps to add'
     type: stepList
     default: [] 
@@ -12,7 +12,7 @@
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-          - ${{each step in parameters.steps}}: #useful to add steps in the future without changing the template
+          - ${{each step in parameters.buildsteps}}: #useful to add steps in the future without changing the template
             -  ${{each pair in step}}: 
                    ${{pair.key}}:${{pair.value}}
           - task: azurekeyvault@2
