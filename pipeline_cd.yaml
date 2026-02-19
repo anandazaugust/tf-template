@@ -18,7 +18,7 @@
             displayName: 'Azure Key Vault: Fetch secrets'
             inputs:
               connectedServiceName: 'acrpushv1' #this svc name should be there in azdo or it ll throw error
-              keyVaultName: 'DC-KV'
+              keyVaultName: 'dolcegabbana'
           - script: |
               make init
               make plan
