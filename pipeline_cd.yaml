@@ -1,9 +1,9 @@
 
- parameters:
-  - name: steps
+ parameters: # if parameter not defined we ll see issue
+  - name: steps # got an issue when no hyphen in the name
     displayName: 'Steps to add'
     type: stepList
-    default: []
+    default: [] 
  
  jobs:
   - job: Deploy
@@ -17,7 +17,7 @@
           - task: azurekeyvault@2
             displayName: 'Azure Key Vault: Fetch secrets'
             inputs:
-              connectedServiceName: 'DC-Project-SC'
+              connectedServiceName: 'acrpushv1' #this svc name should be there in azdo or it ll throw error
               keyVaultName: 'DC-KV'
           - script: |
               make init
