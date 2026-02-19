@@ -92,6 +92,7 @@
     # condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     dependsOn: TF_Plan_main
     # hierarchy is job --> steps --> task/script
+    pool: server 
 
     steps:
       - task: ManualValidation@0
