@@ -6,8 +6,9 @@
     default: [] 
  
  jobs:
-  - job: Deploy
-    displayName: 'terraform plan'
+  - job: TFPlan_feature
+    displayName: 'terraform plan only from feature'
+    condition: ne(variables['Build.SourceBranch'], 'refs/heads/main')
     pool:
       vmImage: 'ubuntu-latest'
     steps:
@@ -43,6 +44,94 @@
 
         #now left side what we see is  the environment variable we are using in the script and right side is the pipeline variable we got from keyvault task and we are passing it to the script as env variable so that terraform can use it to authenticate with azure and do the plan
             displayName: 'tf plan and env variable'
+            # lets try to prove by modifying the env variable and see if it throws error or not
              
 
-           
+  - job: TF_Plan_main
+    displayName: 'terraform plan from main'
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+          - ${{each step in parameters.steps}}: #useful to add steps in the future without changing the template
+            -  ${{each pair in step}}: 
+                   ${{pair.key}}:${{pair.value}}
+          - task: azurekeyvault@2
+            displayName: 'Azure Key Vault: Fetch secrets'
+            inputs:
+              connectedServiceName: 'acrpushv1' #this svc name should be there in azdo or it ll throw error
+              keyVaultName: 'dolcegabbana' # the svc above should have the permission to view the secret
+          - script: env | grep ARM
+            displayName: "Debug ARM"
+            env:
+                ARM_CLIENT_ID: $(myclientid)
+                ARM_TENANT_ID: $(mytenantid)
+                ARM_CLIENT_SECRET: $(myclientsecret)
+            # we are adding above step to view the env variable we got in keyvault task
+
+          - task: terraformInstaller@0
+            displayName: 'Install Terraform'
+            inputs:
+              terraformVersion: 'latest' # we are installing as the public azdo doesnt have it
+          - script: |
+              make init
+              make plan
+          #terraform will expect the env variables in below format , if some other name it wont work
+            env:
+                ARM_CLIENT_ID: $(myclientid)
+                ARM_TENANT_ID: $(mytenantid)
+                ARM_CLIENT_SECRET: $(myclientsecret)
+                #https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret
+
+        #now left side what we see is  the environment variable we are using in the script and right side is the pipeline variable we got from keyvault task and we are passing it to the script as env variable so that terraform can use it to authenticate with azure and do the plan
+            displayName: 'tf plan and env variable'
+            # lets try to prove by modifying the env variable and see if it throws error or not
+    
+  - job: TF_approve
+    displayName: 'terraform approve'
+    # condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    dependsOn: TF_Plan_main
+    pool:
+            - task: ManualValidation@0
+              displayName: 'Manual approval for terraform apply'
+  
+  - job: TF_Apply
+    displayName: 'terraform apply'
+    dependsOn: TF_approve
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+          - ${{each step in parameters.steps}}: #useful to add steps in the future without changing the template
+            -  ${{each pair in step}}: 
+                   ${{pair.key}}:${{pair.value}}
+          - task: azurekeyvault@2
+            displayName: 'Azure Key Vault: Fetch secrets'
+            inputs:
+              connectedServiceName: 'acrpushv1' #this svc name should be there in azdo or it ll throw error
+              keyVaultName: 'dolcegabbana' # the svc above should have the permission to view the secret
+          - script: env | grep ARM
+            displayName: "Debug ARM"
+            env:
+                ARM_CLIENT_ID: $(myclientid)
+                ARM_TENANT_ID: $(mytenantid)
+                ARM_CLIENT_SECRET: $(myclientsecret)
+            # we are adding above step to view the env variable we got in keyvault task
+
+          - task: terraformInstaller@0
+            displayName: 'Install Terraform'
+            inputs:
+              terraformVersion: 'latest' # we are installing as the public azdo doesnt have it
+          - script: |
+              make init
+              make apply
+          #terraform will expect the env variables in below format , if some other name it wont work
+            env:
+                ARM_CLIENT_ID: $(myclientid)
+                ARM_TENANT_ID: $(mytenantid)
+                ARM_CLIENT_SECRET: $(myclientsecret)
+                #https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret
+
+        #now left side what we see is  the environment variable we are using in the script and right side is the pipeline variable we got from keyvault task and we are passing it to the script as env variable so that terraform can use it to authenticate with azure and do the plan
+            
+            # lets try to prove by modifying the env variable and see if it throws error or not
+             
