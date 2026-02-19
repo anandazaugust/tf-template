@@ -22,8 +22,9 @@
           - script: env | grep ARM
             displayName: "Debug ARM"
             env:
-                ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-                ARM_TENANT_ID: $(ARM-TENANT-ID)
+                ARM_CLIENT_ID: $(myclientid)
+                ARM_TENANT_ID: $(mytenantid)
+                ARM_CLIENT_SECRET: $(myclientsecret)
             # we are adding above step to view the env variable we got in keyvault task
 
           - task: terraformInstaller@0
@@ -33,11 +34,13 @@
           - script: |
               make init
               make plan
+          
             env:
-              ARM_CLIENT_ID: $(arm-client-id)
-              ARM_CLIENT_SECRET: $(arm-client-secret)
-              ARM_SUBSCRIPTION_ID: $(arm-subscription-id)
-              ARM_TENANT_ID: $(arm-tenant-id)
+                ARM_CLIENT_ID: $(myclientid)
+                ARM_TENANT_ID: $(mytenantid)
+                ARM_CLIENT_SECRET: $(myclientsecret)
+
+        #now left side what we see is  the environment variable we are using in the script and right side is the pipeline variable we got from keyvault task and we are passing it to the script as env variable so that terraform can use it to authenticate with azure and do the plan
             displayName: 'Set ARM environment variables'
              
 
