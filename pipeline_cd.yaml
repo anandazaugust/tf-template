@@ -19,6 +19,11 @@
             inputs:
               connectedServiceName: 'acrpushv1' #this svc name should be there in azdo or it ll throw error
               keyVaultName: 'dolcegabbana' # the svc above should have the permission to view the secret
+          - script: |
+              echo "Printing ARM variables"
+              env | grep ARM
+            displayName: "Debug ARM env"
+            # we are adding above step to view the env variable we got in keyvault task
 
           - task: terraformInstaller@0
             displayName: 'Install Terraform'
