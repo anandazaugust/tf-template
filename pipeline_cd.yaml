@@ -53,7 +53,7 @@
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-          - ${{each step in parameters.steps}}: #useful to add steps in the future without changing the template
+          - ${{each step in parameters.buildsteps}}: #useful to add steps in the future without changing the template
             -  ${{each pair in step}}: 
                    ${{pair.key}}:${{pair.value}}
           - task: azurekeyvault@2
@@ -91,7 +91,7 @@
     displayName: 'terraform approve'
     # condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     dependsOn: TF_Plan_main
-    # hierarchy is job --> steps --> task/script
+    # hierarchy is jobs --> job --> steps --> task/script
     pool: server 
 
     steps:
@@ -106,7 +106,7 @@
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-          - ${{each step in parameters.steps}}: #useful to add steps in the future without changing the template
+          - ${{each step in parameters.buildsteps}}: #useful to add steps in the future without changing the template
             -  ${{each pair in step}}: 
                    ${{pair.key}}:${{pair.value}}
           - task: azurekeyvault@2
